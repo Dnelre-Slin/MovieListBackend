@@ -77,15 +77,18 @@ def extract_data_search(html_dump, start_match='<table', end_match='</table>'):
             else:
                 data_dict["title"] = a.text
                 data_dict["url"] = a.attrib["href"]
+                data_dict["extra"] = a.tail.strip()
                 # print("Title: {} - {}".format(a.text, a.attrib["href"]))
+        result.append(data_dict)
     # root = ET.parse('test3.html')
-    print(data_dict)
+    return result
 
 
 def external_get_imdb_search(data):
     r = requests.get(IMDB_BASE_SEARCH_URL.format(**data))
     print(r.status_code)
-    extract_data_search(r.text)
+    res = extract_data_search(r.text)
+    print(res)
     # extract_data_search(TEST_HTML2)
     # r = requests.get("https://www.imdb.com/title/tt0133093/?ref_=nv_sr_srsg_0")
     # extract_data_title(r.text)
