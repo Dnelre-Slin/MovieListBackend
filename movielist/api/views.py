@@ -5,7 +5,7 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from api.models import Movie, UserProfile
 from api.serializers import UserSerializer, GroupSerializer, UserProfileSerializer, MovieSerializer
-from api.external_resources import external_get_imdb_search
+from api.external_resources import external_get_imdb_search, external_get_imdb_details
 
 
 class ImdbSearchView(APIView):
@@ -19,10 +19,23 @@ class ImdbSearchView(APIView):
         """
         Return imdb.com results
         """
-        print("Testingtesting")
-        print(request.data)
-        external_get_imdb_search(request.data)
-        return Response()
+        res = external_get_imdb_search(request.data)
+        return Response(res)
+
+
+class ImdbDetailView(APIView):
+    """
+    Retrieve details of a specified title, via url in input, from imdb.com
+    """
+    # authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        """
+        Return imdb.com results
+        """
+        res = external_get_imdb_details(request.data)
+        return Response(res)
 
 
 class UserViewSet(viewsets.ModelViewSet):

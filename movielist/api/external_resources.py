@@ -6,16 +6,15 @@ from rest_framework.exceptions import NotFound
 
 
 IMDB_BASE_SEARCH_URL = "https://www.imdb.com/find?q={movie_name}&s=tt"
+IMDB_BASE_DETAIL_URL = "https://www.imdb.com/{movie_url}"
 
 
-def extract_data_title(html_dump, start_match='<script type="application/ld+json">', end_match='</script>'):
+def extract_data_detail(html_dump, start_match='<script type="application/ld+json">', end_match='</script>'):
     i_start = html_dump.find(start_match)
     i_end = html_dump.find(end_match, i_start)
-    print("start: " + str(i_start))
-    print("end: " + str(i_end))
     reduced_data = html_dump[i_start+len(start_match):i_end]
     dict_data = json.loads(reduced_data)
-    print(dict_data)
+    return dict_data
 
 
 def extract_data_search(html_dump, start_match='<table', end_match='</table>'):
@@ -51,11 +50,10 @@ def external_get_imdb_search(data):
         raise NotFound(detail="Could not retrive data from imdb", code=status.HTTP_404_NOT_FOUND)
 
 
-# def external_get_imdb_details(data):
-#     r = requests.get("https://www.imdb.com/title/tt0133093/?ref_=nv_sr_srsg_0")
-#     res = extract_data_title(r.text)
-#     if r.status_code == status.HTTP_200_OK:
-#         res = extract_data_search(r.text)
-#         return res
-#     else:
-#         raise NotFound(detail="Could not retrive data from imdb", code=status.HTTP_404_NOT_FOUND)
+def external_get_imdb_details(data):
+    r = requests.get(IMDB_BASE_DETAIL_URL.format(**data))
+    if r.status_code == status.HTTP_200_OK:
+        res = extract_data_detail(r.text)
+        return res
+    else:
+        raise NotFound(detail="Could not retrive data from imdb", code=status.HTTP_404_NOT_FOUND)
