@@ -19,7 +19,8 @@ class ImdbSearchView(APIView):
         """
         Return imdb.com results
         """
-        res = external_get_imdb_search(request.data)
+        data = {k: (v[0] if isinstance(v, list) else v) for k, v in request.query_params.items()}
+        res = external_get_imdb_search(data)
         return Response(res)
 
 
@@ -34,7 +35,8 @@ class ImdbDetailView(APIView):
         """
         Return imdb.com results
         """
-        res = external_get_imdb_details(request.data)
+        data = {k: (v[0] if isinstance(v, list) else v) for k, v in request.query_params.items()}
+        res = external_get_imdb_details(data)
         return Response(res)
 
 

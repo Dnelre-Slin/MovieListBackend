@@ -42,6 +42,7 @@ def extract_data_search(html_dump, start_match='<table', end_match='</table>'):
 
 
 def external_get_imdb_search(data):
+    print(data)
     r = requests.get(IMDB_BASE_SEARCH_URL.format(**data))
     if r.status_code == status.HTTP_200_OK:
         res = extract_data_search(r.text)
@@ -51,7 +52,9 @@ def external_get_imdb_search(data):
 
 
 def external_get_imdb_details(data):
+    print(dict(data))
     r = requests.get(IMDB_BASE_DETAIL_URL.format(**data))
+    print(r)
     if r.status_code == status.HTTP_200_OK:
         res = extract_data_detail(r.text)
         return res
